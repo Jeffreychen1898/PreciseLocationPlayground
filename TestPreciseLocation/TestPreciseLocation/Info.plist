@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>local network usage is needed</string>
+	<key>NSNearbyInteractionUsageDescription</key>
+	<string>nearby interaction is needed</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_dir-demo._tcp</string>
+		<string>_dir-demo._udp</string>
+	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>camera is needed</string>
+</dict>
+</plist>

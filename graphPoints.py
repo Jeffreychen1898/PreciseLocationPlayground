@@ -18,36 +18,6 @@ estimated_target_z = []
 
 prev_dist = 0
 
-class KalmanFilter1D:
-    def __init__(self, initial: float, process_noise: float, measurement_noise: float):
-        """
-        :param initial: initial distance estimate
-        :param process_noise: Q, how much the distance can change naturally
-        :param measurement_noise: R, how noisy the measurements are
-        """
-        self.x = initial      # estimated value
-        self.p = 1.0          # estimate uncertainty
-        self.q = process_noise
-        self.r = measurement_noise
-
-    def update(self, measurement: float) -> float:
-        """
-        Update the filter with a new measurement and return the filtered estimate
-        """
-        # Prediction step
-        self.p = self.p + self.q
-
-        # Kalman gain
-        k = self.p / (self.p + self.r)
-
-        # Update estimate
-        self.x = self.x + k * (measurement - self.x)
-
-        # Update uncertainty
-        self.p = (1 - k) * self.p
-
-        return self.x
-
 def valid_pts(p):
     ab = p[1] - p[0]
     ac = p[2] - p[0]
@@ -66,8 +36,9 @@ def valid_pts(p):
 
     return True
 
+d_arr = []
+err_arr = []
 with open("points2.txt") as file:
-    f = KalmanFilter1D(1.56, 1, 0.5)
     for line in file:
         if line[0] == "#":
             continue
@@ -80,9 +51,10 @@ with open("points2.txt") as file:
         estimated_target_y.append(direction[1] * float(d))
         estimated_target_z.append(direction[2] * float(d))
 
-        delta = float(d) - prev_dist
-        print(delta)
-        print(abs(np.linalg.norm(position - target) - float(d)))
+        err = abs(np.linalg.norm(position - target) - float(d))
+        err_arr.append(err)
+        d_arr.append(np.linalg.norm(position - target))
+        print(err_arr)
         print("====")
         # if abs(np.linalg.norm(position - target) - float(d)) > 0.2:
         #     continue
@@ -168,13 +140,16 @@ ax = fig.add_subplot(111, projection='3d')
 
 # Plot points
 ax.scatter(points_x, points_z, points_y, color='blue', marker='o')
-ax.scatter(evaluated_x, evaluated_z, evaluated_y, color='red', marker='x')
-ax.scatter(evaluated_x[-1], evaluated_z[-1], evaluated_y[-1], color='blue', marker='x')
-ax.scatter(target[0], target[2], target[1], color='green', marker='x')
+# ax.scatter(evaluated_x, evaluated_z, evaluated_y, color='red', marker='x')
+# ax.scatter(evaluated_x[-1], evaluated_z[-1], evaluated_y[-1], color='blue', marker='x')
+# ax.scatter(target[0], target[2], target[1], color='green', marker='x')
 
 # Labels
 ax.set_xlabel('X')
 ax.set_ylabel('Y')
 ax.set_zlabel('Z')
 
+plt.show()
+
+plt.scatter(d_arr, err_arr)
 plt.show()
